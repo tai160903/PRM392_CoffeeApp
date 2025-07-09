@@ -7,22 +7,27 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "order_items",
-foreignKeys = {
-    @ForeignKey(
-        entity = Order.class,
-        parentColumns = "uuid",
-        childColumns = "order_uuid",
-        onDelete = ForeignKey.CASCADE
-
-    ),
-    @ForeignKey(
-        entity = Product.class,
-        parentColumns = "uuid",
-        childColumns = "product_uuid",
-        onDelete = ForeignKey.CASCADE
-    )
-})
+@Entity(
+        tableName = "order_items",
+        foreignKeys = {
+                @ForeignKey(
+                        entity = Order.class,
+                        parentColumns = "uuid",
+                        childColumns = "order_uuid",
+                        onDelete = ForeignKey.CASCADE
+                ),
+                @ForeignKey(
+                        entity = Product.class,
+                        parentColumns = "uuid",
+                        childColumns = "product_uuid",
+                        onDelete = ForeignKey.CASCADE
+                )
+        },
+        indices = {
+                @androidx.room.Index(value = "order_uuid"),
+                @androidx.room.Index(value = "product_uuid")
+        }
+)
 public class OrderItem {
     @PrimaryKey
     @ColumnInfo(name = "uuid")

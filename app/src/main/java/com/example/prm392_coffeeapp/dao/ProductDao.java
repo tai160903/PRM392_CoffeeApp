@@ -19,7 +19,7 @@ public interface ProductDao {
     Product getProductById(int productId);
 
     @Query("DELETE FROM products WHERE uuid = :productId")
-    void deleteProductById(int productId);
+    void deleteProductById(String productId);
 
     @Query("UPDATE products SET name = :name, price = :price, description = :description WHERE uuid = :productId")
     void updateProduct(int productId, String name, double price, String description);
