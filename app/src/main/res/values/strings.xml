@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Coffee Manager</string>
+
+    <!-- Drawer Toggle Strings -->
+    <string name="navigation_drawer_open">Mở menu</string>
+    <string name="navigation_drawer_close">Đóng menu</string>
+
+    <!-- Menu Titles -->
+    <string name="nav_product">Quản lý sản phẩm</string>
+    <string name="nav_order">Quản lý đơn hàng</string>
+    <string name="nav_logout">Đăng xuất</string>
+</resources>
