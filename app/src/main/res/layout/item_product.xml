@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
@@ -9,41 +8,82 @@
     app:cardCornerRadius="12dp">
 
     <LinearLayout
-        android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvProductName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tên sản phẩm" />
-
-        <TextView
-            android:id="@+id/tvProductPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Giá: 25.000đ" />
+        <ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_image_bg"
+            android:src="@drawable/ic_launcher_background"
+            android:layout_marginEnd="16dp" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnEdit"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tvProductName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Sửa" />
+                android:text="Tên sản phẩm"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="2dp"/>
 
-            <Button
-                android:id="@+id/btnDelete"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tvProductDescription"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Xóa" />
+                android:text="Mô tả sản phẩm"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="2dp"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/tvProductPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Giá: 25.000đ"
+                android:textStyle="bold"
+                android:textColor="#FF6200EE"
+                android:layout_marginBottom="6dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFBB86FC"
+                    android:text="Sửa"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FF5252"
+                    android:text="Xóa"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
