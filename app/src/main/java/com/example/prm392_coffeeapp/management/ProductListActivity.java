@@ -48,7 +48,7 @@ public class ProductListActivity extends AppCompatActivity {
         btnAddProduct = findViewById(R.id.btnAddProduct);
         db = AppDatabase.getInstance(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar); // Fix: import and use correct Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -63,7 +63,9 @@ public class ProductListActivity extends AppCompatActivity {
         adapter = new ProductManagerAdapter(productList, new ProductManagerAdapter.OnProductActionListener() {
             @Override
             public void onEdit(Product product) {
-                Toast.makeText(ProductListActivity.this, "Chỉnh sửa: " + product.getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ProductListActivity.this, EditProductActivity.class);
+                intent.putExtra("productUuid", product.getUuid());
+                startActivity(intent);
             }
 
             @Override
@@ -72,8 +74,14 @@ public class ProductListActivity extends AppCompatActivity {
                         .setTitle("Xoá sản phẩm")
                         .setMessage("Bạn có chắc muốn xoá " + product.getName() + "?")
                         .setPositiveButton("Xoá", (dialog, which) -> {
-                            db.productDao().deleteProductById(product.getUuid());
-                            reloadProducts();
+                            new Thread(() -> {
+                                db.productDao().deleteProductById(product.getUuid());
+                                runOnUiThread(() -> {
+                                    productList.remove(product);
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(ProductListActivity.this, "Xoá thành công", Toast.LENGTH_SHORT).show();
+                                });
+                            }).start();
                         })
                         .setNegativeButton("Huỷ", null)
                         .show();
@@ -84,10 +92,21 @@ public class ProductListActivity extends AppCompatActivity {
         recyclerProducts.setAdapter(adapter);
 
         btnAddProduct.setOnClickListener(v -> showAddProductDialog());
+        loadProducts();
+    }
+
+    private void loadProducts() {
         new Thread(() -> {
+            productList.clear();
             productList.addAll(Arrays.asList(db.productDao().getAllProducts()));
             runOnUiThread(() -> adapter.notifyDataSetChanged());
         }).start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProducts();
     }
 
     private void showAddProductDialog() {
@@ -99,20 +118,32 @@ public class ProductListActivity extends AppCompatActivity {
         EditText edtPrice = dialogView.findViewById(R.id.etProductPrice);
         previewImage = dialogView.findViewById(R.id.imgProduct);
 
-        // Set image picker on the image view
-        previewImage.setOnClickListener(v -> pickImage());
+        final boolean[] isUploading = {false}; // Prevent multiple submissions
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle("Thêm sản phẩm mới")
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
-                .setPositiveButton("Thêm", null)
-                .setNegativeButton("Huỷ", null);
+                .setTitle("Thêm sản phẩm")
+                .setPositiveButton("Lưu", null)
+                .setNegativeButton("Huỷ", (dialogInterface, i) -> dialogInterface.dismiss())
+                .create();
 
-        AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Override "Thêm" để validate & upload ảnh
+        Button btnAdd = dialogView.findViewById(R.id.btnAdd);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        btnAdd.setOnClickListener(v -> pickImage());
+
+        btnCancel.setOnClickListener(v -> {
+            selectedImageUri = null;
+            if (previewImage != null) {
+                previewImage.setImageResource(R.drawable.ic_launcher_background);
+            }
+        });
+
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if (isUploading[0]) return; // Prevent re-entry
+
             String name = edtName.getText().toString().trim();
             String desc = edtDesc.getText().toString().trim();
             String priceText = edtPrice.getText().toString().trim();
@@ -135,8 +166,11 @@ public class ProductListActivity extends AppCompatActivity {
                 return;
             }
 
+            isUploading[0] = true;
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
             MediaManager.get().upload(selectedImageUri)
-                    .callback(new UploadCallback() {
+                    .callback(new com.cloudinary.android.callback.UploadCallback() {
                         @Override
                         public void onStart(String requestId) {}
 
@@ -162,18 +196,23 @@ public class ProductListActivity extends AppCompatActivity {
                                     adapter.notifyItemInserted(productList.size() - 1);
                                     Toast.makeText(ProductListActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
                                     selectedImageUri = null;
+                                    isUploading[0] = false;
                                     dialog.dismiss();
                                 });
                             }).start();
                         }
 
                         @Override
-                        public void onError(String requestId, ErrorInfo error) {
-                            Toast.makeText(ProductListActivity.this, "Lỗi upload ảnh", Toast.LENGTH_SHORT).show();
+                        public void onError(String requestId, com.cloudinary.android.callback.ErrorInfo error) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(ProductListActivity.this, "Lỗi upload ảnh", Toast.LENGTH_SHORT).show();
+                                isUploading[0] = false;
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                            });
                         }
 
                         @Override
-                        public void onReschedule(String requestId, ErrorInfo error) {}
+                        public void onReschedule(String requestId, com.cloudinary.android.callback.ErrorInfo error) {}
                     })
                     .dispatch();
         });

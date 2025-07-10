@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="320dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@drawable/rounded_dialog_bg"
     android:elevation="8dp"
     android:padding="24dp">
 
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:gravity="center"
-        android:text="Add Product"
+        android:text="Thêm Sản Phẩm"
         android:textColor="#222222"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -26,20 +26,19 @@
         android:id="@+id/imgProduct"
         android:layout_width="90dp"
         android:layout_height="90dp"
-        android:layout_marginBottom="20dp"
         android:background="@drawable/rounded_image_bg"
         android:elevation="4dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <EditText
         android:id="@+id/etProductName"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_dialog_bg"
         android:hint="Product Name"
         android:inputType="textPersonName"
@@ -54,7 +53,7 @@
         android:id="@+id/etProductDescription"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_dialog_bg"
         android:hint="Description"
         android:inputType="textMultiLine"
@@ -71,7 +70,7 @@
         android:id="@+id/etProductPrice"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_dialog_bg"
         android:hint="Price"
         android:inputType="numberDecimal"
@@ -92,32 +91,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etProductPrice">
+        app:layout_constraintTop_toBottomOf="@id/etProductPrice"
+        tools:gravity="center">
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/rounded_dialog_bg"
-            android:backgroundTint="#D20B0B"
-            android:elevation="2dp"
-            android:text="Cancel"
-            android:textColor="#FFFFFF" />
-
-        <Space
-            android:layout_width="16dp"
-            android:layout_height="wrap_content" />
+            android:backgroundTint="#ED0202"
+            android:paddingHorizontal="16dp"
+            android:text="Đặt lại ảnh"
+            android:textColor="#FDFCFC" />
 
         <Button
             android:id="@+id/btnAdd"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/rounded_dialog_bg"
-            android:backgroundTint="#16A903"
-            android:elevation="2dp"
-            android:text="Add"
-            android:textColor="@android:color/white" />
+            android:backgroundTint="#0652DD"
+            android:paddingHorizontal="16dp"
+            android:text="Chọn ảnh"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
