@@ -9,14 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_coffeeapp.R;
-import com.example.prm392_coffeeapp.entity.OrderItem;
+import com.example.prm392_coffeeapp.entity.CartItem;
 
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
-    private List<OrderItem> cartItems;
+    private List<CartItem> cartItems;
 
-    public CartAdapter(List<OrderItem> cartItems) {
+    public CartAdapter(List<CartItem> cartItems) {
         this.cartItems = cartItems;
     }
 
@@ -30,10 +30,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        OrderItem item = cartItems.get(position);
-//        holder.tvName.setText(item.getProductName());
-        holder.tvQty.setText("x" + item.getQuantity());
-        holder.tvTotal.setText((item.getQuantity() * item.getPrice()) + "đ");
+        CartItem item = cartItems.get(position);
+        holder.tvName.setText(item.productName);
+        holder.tvQty.setText("x" + item.quantity);
+        holder.tvTotal.setText(String.format("%.2fđ", item.quantity * item.price));
     }
 
     @Override
@@ -52,4 +52,3 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         }
     }
 }
-
