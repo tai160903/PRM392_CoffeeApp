@@ -5,4 +5,7 @@
     <color name="primary">#5D1049</color>
     <color name="primaryText">#212121</color>
     <color name="background">#FFFFFF</color>
+    <color name="login_background">#3F51B5</color>
+    <color name="gray">#BDBDBD</color>
+    <color name="colorPrimary">#6200EE</color>
 </resources>

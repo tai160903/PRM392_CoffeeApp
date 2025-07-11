@@ -45,7 +45,6 @@ public class ProductManagerAdapter extends RecyclerView.Adapter<ProductManagerAd
         holder.txtName.setText(product.getName());
         holder.txtPrice.setText("Giá: " + product.getPrice() + "đ");
 
-        // Load image using Glide
         Glide.with(holder.itemView.getContext())
                 .load(product.getImageUrl())
                 .placeholder(R.drawable.ic_launcher_background)
@@ -72,7 +71,7 @@ public class ProductManagerAdapter extends RecyclerView.Adapter<ProductManagerAd
             txtPrice = itemView.findViewById(R.id.tvProductPrice);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
-            imgProduct = itemView.findViewById(R.id.imgProduct); // Add this line
+            imgProduct = itemView.findViewById(R.id.imgProduct);
         }
     }
 }

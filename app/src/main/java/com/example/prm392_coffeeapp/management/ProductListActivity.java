@@ -10,10 +10,8 @@ import android.view.View;
 import android.widget.*;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +22,7 @@ import com.example.prm392_coffeeapp.R;
 import com.example.prm392_coffeeapp.adapter.ProductManagerAdapter;
 import com.example.prm392_coffeeapp.database.AppDatabase;
 import com.example.prm392_coffeeapp.entity.Product;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.*;
 
@@ -38,6 +37,7 @@ public class ProductListActivity extends AppCompatActivity {
     private List<Product> productList;
     private ProductManagerAdapter adapter;
     private AppDatabase db;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +50,6 @@ public class ProductListActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
 
         initCloudinary();
 
@@ -77,8 +71,7 @@ public class ProductListActivity extends AppCompatActivity {
                             new Thread(() -> {
                                 db.productDao().deleteProductById(product.getUuid());
                                 runOnUiThread(() -> {
-                                    productList.remove(product);
-                                    adapter.notifyDataSetChanged();
+                                    loadProducts();
                                     Toast.makeText(ProductListActivity.this, "Xoá thành công", Toast.LENGTH_SHORT).show();
                                 });
                             }).start();
@@ -93,13 +86,35 @@ public class ProductListActivity extends AppCompatActivity {
 
         btnAddProduct.setOnClickListener(v -> showAddProductDialog());
         loadProducts();
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_products);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                    startActivity(new Intent(this, ManagerActivity.class));
+                    finish();
+                return true;
+            } else if (itemId == R.id.nav_products) {
+                // Already here
+                return true;
+            } else if (itemId == R.id.nav_orders) {
+                startActivity(new Intent(this, OrderListActivity.class));
+                finish();
+                return true;
+            }
+            return false;
+        });
     }
 
     private void loadProducts() {
         new Thread(() -> {
-            productList.clear();
-            productList.addAll(Arrays.asList(db.productDao().getAllProducts()));
-            runOnUiThread(() -> adapter.notifyDataSetChanged());
+            List<Product> products = Arrays.asList(db.productDao().getAllProducts());
+            runOnUiThread(() -> {
+                productList.clear();
+                productList.addAll(products);
+                adapter.notifyDataSetChanged();
+            });
         }).start();
     }
 
@@ -192,8 +207,7 @@ public class ProductListActivity extends AppCompatActivity {
                             new Thread(() -> {
                                 db.productDao().insertProduct(newProduct);
                                 runOnUiThread(() -> {
-                                    productList.add(newProduct);
-                                    adapter.notifyItemInserted(productList.size() - 1);
+                                    loadProducts();
                                     Toast.makeText(ProductListActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
                                     selectedImageUri = null;
                                     isUploading[0] = false;
@@ -233,20 +247,6 @@ public class ProductListActivity extends AppCompatActivity {
                 previewImage.setImageURI(selectedImageUri);
             }
         }
-    }
-
-    private void reloadProducts() {
-        new Thread(() -> {
-            List<Product> products = Arrays.asList(db.productDao().getAllProducts());
-            runOnUiThread(() -> {
-                if (productList == null) {
-                    productList = new ArrayList<>();
-                }
-                productList.clear();
-                productList.addAll(products);
-                adapter.notifyDataSetChanged();
-            });
-        }).start();
     }
 
     private void initCloudinary() {

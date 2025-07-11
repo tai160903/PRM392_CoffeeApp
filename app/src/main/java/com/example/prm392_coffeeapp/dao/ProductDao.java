@@ -24,4 +24,7 @@ public interface ProductDao {
     @Query("UPDATE products SET name = :name, price = :price, description = :description WHERE uuid = :productId")
     void updateProduct(String productId, String name, double price, String description);
 
+    @Query("DELETE FROM products")
+    void deleteAllProducts();
+
 }
